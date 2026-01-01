@@ -10,19 +10,16 @@ import type {
     MusicPlayerConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
-import { getTranslateLanguageFromConfig, detectBrowserLanguage } from "./utils/language-utils";
 
 /**
  * 
  */
 
-// 自动检测浏览器语言
-const SITE_LANG = detectBrowserLanguage("en"); // 服务端渲染时默认为 'en'
-// 如果需要强制使用特定语言，可以取消注释下面一行并设置语言代码
-//const SITE_LANG = "zh"; // 强制使用的语言代码，'zh', 'en', 'ja' 等
+// 设置浏览器语言 ('zh', 'en', ...)
+const SITE_LANG = "en";
 
-// 设置网站时区
-const SITE_TIMEZONE = 8; // from -12 to 12 default in UTC+8
+// 设置网站时区 (from -12 to 12)
+const SITE_TIMEZONE = 8; // UTC+8
 
 
 // 站点配置
@@ -41,8 +38,6 @@ export const siteConfig: SiteConfig = {
         enable: true,
         // 翻译服务
         service: "client.edge", // 使用 Edge 浏览器
-        // 默认翻译语言
-        defaultLanguage: getTranslateLanguageFromConfig(SITE_LANG), // 根据检测到的语言自动设置默认翻译语言
         // 显示语言选择下拉框
         showSelectTag: false, // 使用自定义按钮
         // 自动检测用户语言
@@ -252,10 +247,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
             order: 1,
             // 组件位置
             position: "top", // 固定在顶部
-            // CSS 类名，用于应用样式和动画
-            class: "onload-animation",
-            // 动画延迟时间 (毫秒) ，用于错开动画效果
-            animationDelay: 0,
         },
         {
             // 组件类型
@@ -268,10 +259,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
             order: 2,
             // 组件位置
             position: "top", // 固定在顶部
-            // CSS 类名
-            class: "onload-animation",
-            // 动画延迟时间
-            animationDelay: 50,
         },
         {
             // 组件类型
@@ -284,10 +271,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
             order: 3,
             // 组件位置
             position: "sticky", // 粘性定位，可滚动
-            // CSS 类名
-            class: "onload-animation",
-            // 动画延迟时间
-            animationDelay: 150,
             // 响应式配置
             responsive: {
                 // 折叠阈值
@@ -305,26 +288,30 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
             order: 4,
             // 组件位置
             position: "sticky", // 粘性定位，可滚动
-            // CSS 类名
-            class: "onload-animation",
-            // 动画延迟时间
-            animationDelay: 200,
             // 响应式配置
             responsive: {
                 // 折叠阈值
                 collapseThreshold: 20, // 当标签数量超过20个时自动折叠
             },
         },
+        {
+            // 组件类型
+            type: "toc", // 目录组件
+            // 是否启用该组件
+            enable: true,
+            // 组件所属侧边栏
+            side: "right",
+            // 组件显示顺序 (数字越小越靠前)
+            order: 1,
+            // 组件位置
+            position: "sticky", // 粘性定位，可滚动
+            // 自定义属性
+            customProps: {
+                // 目录深度 (1-6，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推)
+                depth: 3,
+            },
+        },
     ],
-    // 默认动画配置
-    defaultAnimation: {
-        // 是否启用默认动画
-        enable: true,
-        // 基础延迟时间 (毫秒)
-        baseDelay: 0,
-        // 每个组件递增的延迟时间 (毫秒)
-        increment: 50,
-    },
     // 响应式布局配置
     responsive: {
         // 不同设备的布局模式 ("hidden" 不显示侧边栏 | "drawer" 抽屉模式 | "sidebar" 显示侧边栏)
@@ -408,13 +395,6 @@ export const postConfig: PostConfig = {
         // 主题
         theme: "github-dark", // 深色背景
     },
-    // 目录配置
-    toc: {
-        // 启用目录功能
-        enable: true,
-        // 目录深度 (1-6，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推)
-        depth: 3,
-    },
     // 许可证配置
     license: {
         // 启用许可证
@@ -433,7 +413,7 @@ export const postConfig: PostConfig = {
             // 环境 ID
             envId: "https://twikoo.vercel.app",
             // 语言
-            lang: "en",
+            lang: SITE_LANG, // 默认使用站点语言
         },
     },
 };
