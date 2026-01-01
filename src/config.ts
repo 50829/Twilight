@@ -95,13 +95,6 @@ export const siteConfig: SiteConfig = {
             // 轮播间隔时间 (秒)
             interval: 3.3,
         },
-        // PicFlow API 配置 (fullscreen 和 banner 模式共享)
-        imageApi: {
-            // 启用图片 API
-            enable: false,
-            // API 地址，返回每行一个图片链接的文本
-            url: "http://domain.com/api_v2.php?format=text&count=4",
-        },
         // Banner 模式专属配置
         banner: {
             // 横幅文本配置

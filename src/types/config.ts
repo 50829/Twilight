@@ -91,13 +91,6 @@ export type SiteConfig = {
             // 轮播间隔时间 (s) 
             interval: number;
         };
-        // PicFlow API 配置 (fullscreen 和 banner 模式共享)
-        imageApi?: {
-            // 启用图片 API
-            enable: boolean;
-            // API 地址，返回每行一个图片链接的文本 (https://github.com/matsuzaka-yuki/PicFlow-API)
-            url: string;
-        };
         // Banner 模式专属配置
         banner?: {
             homeText?: {
