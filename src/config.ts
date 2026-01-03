@@ -94,6 +94,8 @@ export const siteConfig: SiteConfig = {
             enable: true,
             // 轮播间隔时间 (秒)
             interval: 3.3,
+            // 启用 Ken Burns 效果
+            kenBurns: true,
         },
         // Banner 模式专属配置
         banner: {

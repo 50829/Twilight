@@ -141,7 +141,7 @@ function showBannerMode() {
                 setTimeout(() => {
                     const banner = document.getElementById('banner');
                     if (banner) {
-                        banner.classList.remove('opacity-0', 'scale-105');
+                        banner.classList.remove('opacity-0');
                         banner.classList.add('opacity-100');
                     }
                     // 处理轮播初始化
@@ -149,11 +149,11 @@ function showBannerMode() {
                     if (carouselItems.length > 1) {
                         carouselItems.forEach((item, index) => {
                             if (index === 0) {
-                                item.classList.add('opacity-100', 'scale-100');
-                                item.classList.remove('opacity-0', 'scale-110');
+                                item.classList.add('opacity-100');
+                                item.classList.remove('opacity-0');
                             } else {
-                                item.classList.add('opacity-0', 'scale-110');
-                                item.classList.remove('opacity-100', 'scale-100');
+                                item.classList.add('opacity-0');
+                                item.classList.remove('opacity-100');
                             }
                         });
                     }
@@ -164,13 +164,13 @@ function showBannerMode() {
             setTimeout(() => {
                 const banner = document.getElementById('banner');
                 if (banner) {
-                    banner.classList.remove('opacity-0', 'scale-105');
+                    banner.classList.remove('opacity-0');
                     banner.classList.add('opacity-100');
                 }
                 // 处理移动端单图片
                 const mobileBanner = document.querySelector('.block.lg\\:hidden[alt="Mobile banner image of the blog"]');
                 if (mobileBanner) {
-                    mobileBanner.classList.remove('opacity-0', 'scale-105');
+                    mobileBanner.classList.remove('opacity-0');
                     mobileBanner.classList.add('opacity-100');
                 }
             }, 100);
@@ -254,7 +254,7 @@ function reinitializeComponents(mode: WALLPAPER_MODE) {
             setTimeout(() => {
                 const banner = document.getElementById('banner');
                 if (banner) {
-                    banner.classList.remove('opacity-0', 'scale-105');
+                    banner.classList.remove('opacity-0');
                     banner.classList.add('opacity-100');
                 }
             }, 100);

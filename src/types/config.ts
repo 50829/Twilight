@@ -90,6 +90,8 @@ export type SiteConfig = {
             enable: boolean;
             // 轮播间隔时间 (s) 
             interval: number;
+            // 启用 Ken Burns 效果
+            kenBurns?: boolean;
         };
         // Banner 模式专属配置
         banner?: {

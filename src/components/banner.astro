@@ -55,12 +55,13 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
             <ul class="carousel-list h-full w-full">
                 {imageSources.desktop.map((src, index) => (
                     <li class:list={[
-                        "carousel-item desktop-item hidden lg:block absolute inset-0 transition-all duration-600",
-                        index === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+                        "carousel-item desktop-item hidden lg:block absolute inset-0 transition-opacity duration-1200",
+                        index === 0 ? 'opacity-100' : 'opacity-0',
+                        carouselConfig?.kenBurns !== false ? 'ken-burns-enabled' : ''
                     ]}>
                         <ImageWrapper
                             alt={`Desktop banner ${index + 1}`}
-                            class:list={["object-cover h-full w-full transition-transform duration-600 ease-out"]}
+                            class:list={["object-cover h-full w-full"]}
                             src={src}
                             position={config.position}
                         />
@@ -68,12 +69,13 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
                 ))}
                 {imageSources.mobile.map((src, index) => (
                     <li class:list={[
-                        "carousel-item mobile-item block lg:hidden absolute inset-0 transition-all duration-600",
-                        index === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+                        "carousel-item mobile-item block lg:hidden absolute inset-0 transition-opacity duration-1200",
+                        index === 0 ? 'opacity-100' : 'opacity-0',
+                        carouselConfig?.kenBurns !== false ? 'ken-burns-enabled' : ''
                     ]}>
                         <ImageWrapper
                             alt={`Mobile banner ${index + 1}`}
-                            class:list={["object-cover h-full w-full transition-transform duration-600 ease-out"]}
+                            class:list={["object-cover h-full w-full"]}
                             src={src}
                             position={config.position}
                         />
@@ -222,13 +224,13 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
             // 如果禁用了轮播但有多张图，则随机显示一张
             if (items.length > 1 && !isEnabled) {
                 items.forEach(item => {
-                    item.classList.add('opacity-0', 'scale-110');
-                    item.classList.remove('opacity-100', 'scale-100');
+                    item.classList.add('opacity-0');
+                    item.classList.remove('opacity-100');
                 });
                 const randomIndex = Math.floor(Math.random() * items.length);
                 const randomItem = items[randomIndex];
-                randomItem.classList.add('opacity-100', 'scale-100');
-                randomItem.classList.remove('opacity-0', 'scale-110');
+                randomItem.classList.add('opacity-100');
+                randomItem.classList.remove('opacity-0');
                 return null;
             }
 
@@ -237,22 +239,33 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
                 
                 function switchToSlide(index) {
                     const currentItem = items[currentIndex];
-                    currentItem.classList.remove('opacity-100', 'scale-100');
-                    currentItem.classList.add('opacity-0', 'scale-110');
+                    currentItem.classList.remove('opacity-100');
+                    currentItem.classList.add('opacity-0');
                     currentIndex = index;
                     const nextItem = items[currentIndex];
-                    nextItem.classList.add('opacity-100', 'scale-100');
-                    nextItem.classList.remove('opacity-0', 'scale-110');
+                    nextItem.classList.add('opacity-100');
+                    nextItem.classList.remove('opacity-0');
+                    // 通过切换 is-animating 类来重置下一张图片的动画
+                    if (nextItem.classList.contains('ken-burns-enabled')) {
+                        nextItem.classList.remove('is-animating');
+                        nextItem.offsetHeight; // 强制重绘
+                        nextItem.classList.add('is-animating');
+                    }
                 }
 
                 // 初始化：隐藏所有图片，只显示第一张
                 items.forEach((item, index) => {
                     if (index === 0) {
-                        item.classList.add('opacity-100', 'scale-100');
-                        item.classList.remove('opacity-0', 'scale-110');
+                        item.classList.add('opacity-100');
+                        item.classList.remove('opacity-0');
+                        // 初始图片开启动画
+                        if (item.classList.contains('ken-burns-enabled')) {
+                            item.classList.add('is-animating');
+                        }
                     } else {
-                        item.classList.add('opacity-0', 'scale-110');
-                        item.classList.remove('opacity-100', 'scale-100');
+                        item.classList.add('opacity-0');
+                        item.classList.remove('opacity-100');
+                        item.classList.remove('is-animating');
                     }
                 });
 
@@ -346,11 +359,11 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
         requestAnimationFrame(() => {
             const banner = document.getElementById('banner');
             if (banner) {
-                banner.classList.remove('opacity-0', 'scale-105');
+                banner.classList.remove('opacity-0');
             }
             const mobileBanner = document.querySelector('.block.lg\\:hidden[alt="Mobile banner"]');
             if (mobileBanner && !document.getElementById('banner-carousel')) {
-                mobileBanner.classList.remove('opacity-0', 'scale-105');
+                mobileBanner.classList.remove('opacity-0');
                 mobileBanner.classList.add('opacity-100');
             }
             const carousel = document.getElementById('banner-carousel');
