@@ -206,9 +206,23 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
         const carousel = document.getElementById('banner-carousel');
         if (!carousel) return;
 
+        // 检查是否是同一个 DOM 元素且定时器正在运行，避免重复初始化导致动画重置
+        if (window.bannerCarouselTimer && window.currentBannerCarousel === carousel) {
+            return;
+        }
+        window.currentBannerCarousel = carousel;
+
+        // 初始化全局状态
+        if (!window.bannerCarouselState) {
+            window.bannerCarouselState = {
+                currentIndex: 0,
+                lastSwitchTime: Date.now()
+            };
+        }
+
         // 清理旧的定时器，防止重复初始化导致的闪烁
         if (window.bannerCarouselTimer) {
-            clearInterval(window.bannerCarouselTimer);
+            clearTimeout(window.bannerCarouselTimer);
             window.bannerCarouselTimer = null;
         }
 
@@ -235,13 +249,23 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
             }
 
             if (items.length > 1 && isEnabled) {
-                let currentIndex = 0;
+                // 使用全局状态中的索引
+                let currentIndex = window.bannerCarouselState.currentIndex;
+                // 确保索引有效
+                if (currentIndex >= items.length) {
+                    currentIndex = 0;
+                    window.bannerCarouselState.currentIndex = 0;
+                }
                 
                 function switchToSlide(index) {
                     const currentItem = items[currentIndex];
                     currentItem.classList.remove('opacity-100');
                     currentItem.classList.add('opacity-0');
                     currentIndex = index;
+                    // 更新全局状态
+                    window.bannerCarouselState.currentIndex = index;
+                    window.bannerCarouselState.lastSwitchTime = Date.now();
+
                     const nextItem = items[currentIndex];
                     nextItem.classList.add('opacity-100');
                     nextItem.classList.remove('opacity-0');
@@ -253,9 +277,9 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
                     }
                 }
 
-                // 初始化：隐藏所有图片，只显示第一张
+                // 初始化：根据当前索引显示图片
                 items.forEach((item, index) => {
-                    if (index === 0) {
+                    if (index === currentIndex) {
                         item.classList.add('opacity-100');
                         item.classList.remove('opacity-0');
                         // 初始图片开启动画
@@ -281,74 +305,26 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
         const mobileCtrl = setupCarousel(mobileItems, carouselConfig?.enable);
 
         if (carouselConfig?.enable && (desktopCtrl || mobileCtrl)) {
-            let isPaused = false;
-
             function startCarousel() {
-                clearInterval(window.bannerCarouselTimer);
-                window.bannerCarouselTimer = setInterval(() => {
-                    if (!isPaused) {
+                if (window.bannerCarouselTimer) clearTimeout(window.bannerCarouselTimer);
+                
+                const runLoop = () => {
+                    const now = Date.now();
+                    const intervalMs = carouselInterval * 1000;
+                    const elapsed = now - window.bannerCarouselState.lastSwitchTime;
+                    let delay = intervalMs - elapsed;
+                    
+                    if (delay < 0) delay = 0;
+
+                    window.bannerCarouselTimer = setTimeout(() => {
                         desktopCtrl?.next();
                         mobileCtrl?.next();
-                    }
-                }, carouselInterval * 1000);
+                        runLoop();
+                    }, delay);
+                };
+
+                runLoop();
             }
-
-            // 鼠标悬停暂停（桌面端）
-            carousel.addEventListener('mouseenter', () => {
-                isPaused = true;
-                clearInterval(window.bannerCarouselTimer);
-            });
-            carousel.addEventListener('mouseleave', () => {
-                isPaused = false;
-                startCarousel();
-            });
-
-            // 移动端触摸手势支持
-            let startX = 0;
-            let startY = 0;
-            let isSwiping = false;
-
-            carousel.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-                isSwiping = false;
-                isPaused = true;
-                clearInterval(window.bannerCarouselTimer);
-            }, { passive: true });
-
-            carousel.addEventListener('touchmove', (e) => {
-                if (!startX || !startY) return;
-                const diffX = Math.abs(e.touches[0].clientX - startX);
-                const diffY = Math.abs(e.touches[0].clientY - startY);
-                if (diffX > diffY && diffX > 30) {
-                    isSwiping = true;
-                    // e.preventDefault(); // Remove to avoid passive listener warning if not needed
-                }
-            }, { passive: true });
-
-            carousel.addEventListener('touchend', (e) => {
-                if (!startX || !startY || !isSwiping) {
-                    isPaused = false;
-                    startCarousel();
-                    return;
-                }
-                const endX = e.changedTouches[0].clientX;
-                const diffX = startX - endX;
-                if (Math.abs(diffX) > 50) {
-                    if (diffX > 0) {
-                        desktopCtrl?.next();
-                        mobileCtrl?.next();
-                    } else {
-                        desktopCtrl?.prev();
-                        mobileCtrl?.prev();
-                    }
-                }
-                startX = 0;
-                startY = 0;
-                isSwiping = false;
-                isPaused = false;
-                startCarousel();
-            }, { passive: true });
 
             startCarousel();
         }

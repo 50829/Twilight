@@ -22,6 +22,18 @@ declare global {
         initBannerCarousel?: () => void;
         initFullscreenWallpaperCarousel?: () => void;
         initSemifullScrollDetection?: () => void;
+        bannerCarouselState?: {
+            currentIndex: number;
+            lastSwitchTime: number;
+        };
+        fullscreenWallpaperState?: {
+            currentIndex: number;
+            lastSwitchTime: number;
+        };
+        bannerCarouselTimer?: any;
+        fullscreenWallpaperTimer?: any;
+        currentBannerCarousel?: HTMLElement | null;
+        currentFullscreenWallpaperCarousel?: HTMLElement | null;
     }
 }
 
@@ -147,8 +159,9 @@ function showBannerMode() {
                     // 处理轮播初始化
                     const carouselItems = carousel.querySelectorAll('.carousel-item');
                     if (carouselItems.length > 1) {
+                        const currentIndex = window.bannerCarouselState?.currentIndex || 0;
                         carouselItems.forEach((item, index) => {
-                            if (index === 0) {
+                            if (index === currentIndex) {
                                 item.classList.add('opacity-100');
                                 item.classList.remove('opacity-0');
                             } else {
