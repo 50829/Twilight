@@ -207,7 +207,7 @@
 
     .carousel-item.ken-burns-enabled {
         /* 硬件加速与缩放维持 */
-        transform: scale(1.1) translateZ(0);
+        transform: scale(1.0) translateZ(0);
         will-change: transform, opacity;
         /* 触摸响应 */
         touch-action: pan-y;
