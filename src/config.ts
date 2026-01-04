@@ -80,10 +80,13 @@ export const siteConfig: SiteConfig = {
             // 桌面壁纸图片 (支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播)
             desktop: [
                 "/assets/desktop-banner/desktopBanner_1.webp",
+                "/assets/desktop-banner/desktopBanner_2.webp",
+                "/assets/desktop-banner/desktopBanner_3.webp",
             ],
             // 移动壁纸图片 (支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播)
             mobile: [
                 "/assets/mobile-banner/mobileBanner_1.webp",
+                "/assets/mobile-banner/mobileBanner_2.webp",
             ],
         },
         // 壁纸位置 ('top' | 'center' | 'bottom')
@@ -93,7 +96,7 @@ export const siteConfig: SiteConfig = {
             // 为多张图片启用轮播，否则随机显示一张图片
             enable: true,
             // 轮播间隔时间 (秒)
-            interval: 3.3,
+            interval: 3.6,
             // 启用 Ken Burns 效果
             kenBurns: true,
         },
